@@ -1,15 +1,22 @@
-import express from 'express';
-import {connectDB} from './db/index.js';
-import dotenv from 'dotenv';
+import app from "./app.js";
+import { connectDB } from "./db/index.js";
+import dotenv from "dotenv";
 dotenv.config();
-const app = express();
 
 const PORT = process.env.PORT || 5000;
-connectDB();
-app.listen(PORT,()=>{
-    console.log(`Server started on port number... ${PORT}`);
-})
-
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server started on port number... ${PORT}`);
+    });
+    app.on("error",(error)=>{
+      console.log(`Error while starting server`, error);
+      throw error;
+    })
+  })
+  .catch((err) => {
+    console.log("Mongo DB connection failed", err);
+  });
 
 /*
 //have taken the IIFE
